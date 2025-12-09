@@ -132,6 +132,12 @@
 </template>
 
 <script setup>
+useHead({
+  htmlAttrs: {
+    lang: 'en'
+  }
+})
+
 const statusMessage = ref('')
 const statusType = ref('info')
 
@@ -223,11 +229,11 @@ const showDocs = () => {
 
 .slide-up-enter-from {
   opacity: 0;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateY(20px);
 }
 
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(-20px);
+  transform: translateY(-20px);
 }
 </style>

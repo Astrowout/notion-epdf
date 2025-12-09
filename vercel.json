@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "nuxt.config.ts",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": ".output/public"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/.output/server/index.mjs"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/.output/public/$1"
+    }
+  ],
+  "functions": {
+    ".output/server/**/*.mjs": {
+      "maxDuration": 60
+    }
+  }
+}

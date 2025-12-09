@@ -26,10 +26,31 @@ export default defineEventHandler(async (event) => {
 
     const outputPath = join(tempDir, `${filename || 'notion-export'}.pdf`)
 
-    // Build Python command
+    // Build Python command - try multiple Python paths
     const pythonScript = join(process.cwd(), 'server', 'scripts', 'export.py')
     
-    let command = `python3 ${pythonScript} --token "${token}" --page-id "${pageId}" --output "${outputPath}" --page-size "${pageSize || 'letter'}"`
+    // Possible Python locations
+    const pythonPaths = [
+      process.env.PYTHON_PATH,
+      '/vercel/.pyenv/shims/python3',
+      'python3',
+      'python'
+    ].filter(Boolean)
+    
+    let pythonCmd = 'python3' // default
+    
+    // Try to find working python command
+    for (const cmd of pythonPaths) {
+      try {
+        await execAsync(`${cmd} --version`)
+        pythonCmd = cmd
+        break
+      } catch {
+        continue
+      }
+    }
+    
+    let command = `${pythonCmd} "${pythonScript}" --token "${token}" --page-id "${pageId}" --output "${outputPath}" --page-size "${pageSize || 'letter'}"`
     
     if (watermark) {
       command += ` --watermark "${watermark}"`
